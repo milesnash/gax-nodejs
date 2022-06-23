@@ -122,37 +122,4 @@ export interface GRPCCallOtherArgs {
   metadataBuilder: (abTests?: {}, headers?: {}) => {};
 }
 
-export type ComputeLROOperation =
-  computeOperationProtos.google.cloud.compute.v1.Operation;
-
-type GlobalOperationRequest = {
-  operation?: string;
-  project?: string;
-};
-
-type RegionOperationRequest = {
-  operation?: string;
-  project?: string;
-  region?: string;
-};
-
-type ZoneOperationRequest = {
-  operation?: string;
-  project?: string;
-  zone?: string;
-};
-
-type GlobalOrganizationOperationRequest = {
-  project?: string;
-  parentId?: string;
-};
-
-export type ComputeOperationRequest =
-  | GlobalOperationRequest
-  | ZoneOperationRequest
-  | RegionOperationRequest
-  | GlobalOrganizationOperationRequest;
-
-export type ComputeOperationClient = {
-  get(request: ComputeOperationRequest): Promise<ResultTuple>;
-};
+export type ComputeLROOperation = computeOperationProtos.Operation;

@@ -17,17 +17,15 @@
 import {EventEmitter} from 'events';
 import {Status} from '../status';
 
-import {
-  ComputeLROOperation,
-  ComputeOperationClient,
-  ComputeOperationRequest,
-  ResultTuple,
-} from '../apitypes';
+import {ComputeLROOperation, ResultTuple} from '../apitypes';
 import {CancellablePromise} from '../call';
 import {BackoffSettings, CallOptions} from '../gax';
 import {GoogleError} from '../googleError';
 import {Metadata} from '../grpc';
-import {LongRunningDescriptor} from './longRunningDescriptor';
+import {
+  ComputeLROOptions,
+  LongRunningDescriptor,
+} from './longRunningDescriptor';
 import * as operationProtos from '../../protos/operations';
 import * as computeOperationProtos from '../../protos/compute_operations';
 import {OperationsClient} from '../operationsClient';
@@ -48,16 +46,25 @@ export interface GetOperationCallback {
   ): void;
 }
 
-// TODO(summerji): check with Vadym the error compose;
-// Consider to move in GoogleError
 function fromComputeOperationError(
   operation: ComputeLROOperation
 ): GoogleError | undefined {
-  if (!operation.httpErrorMessage && !operation.httpErrorStatusCode) {
+  if (!operation.error) {
     return undefined;
   }
-  const errMessage = `${operation.httpErrorStatusCode}: ${operation.httpErrorMessage}`;
-  return Object.assign(new GoogleError(errMessage), operation.error);
+  const computeErrorMessage = computeOperationProtos.Error.fromObject(
+    operation.error
+  );
+  const computeErrorObj =
+    computeOperationProtos.Error.toObject(computeErrorMessage);
+  const json = {
+    error: {
+      code: operation.httpErrorStatusCode,
+      message: operation.httpErrorMessage,
+      computeErrorObj,
+    },
+  };
+  return GoogleError.parseHttpError(json);
 }
 
 type LROOperation = operationProtos.google.longrunning.Operation;
@@ -72,19 +79,19 @@ export class Operation extends EventEmitter {
   backoffSettings: BackoffSettings;
   _callOptions?: CallOptions;
   currentCallPromise_?: CancellablePromise<ResultTuple> | Promise<ResultTuple>;
-  name?: string | null;
+  name?: string | number | Long | null;
   done?: boolean;
   error?: GoogleError;
   response?: {};
-  diregapic?: boolean;
-  computeRequest?: ComputeOperationRequest;
+  diregapic?: ComputeLROOptions | null;
+  computeRequest?: {[k: string]: unknown};
 
   /**
    * Wrapper for a google.longrunnung.Operation.
    *
    * @constructor
    *
-   * @param {google.longrunning.Operation | google.cloud.compute.v1.Operation} grpcOp - The operation to be wrapped.
+   * @param {google.longrunning.Operation | google.cloud.compute.v1.Operation} operationType - The operation to be wrapped.
    * @param {LongRunningDescriptor} longrunningDescriptor - This defines the
    * operations service client and unpacking mechanisms for the operation.
    * @param {BackoffSettings} backoffSettings - The backoff settings used in
@@ -93,7 +100,7 @@ export class Operation extends EventEmitter {
    * requests.
    */
   constructor(
-    grpcOp: LROOperation | ComputeLROOperation,
+    operationType: LROOperation | ComputeLROOperation,
     longrunningDescriptor: LongRunningDescriptor,
     backoffSettings: BackoffSettings,
     callOptions?: CallOptions,
@@ -102,23 +109,27 @@ export class Operation extends EventEmitter {
     super();
     this.completeListeners = 0;
     this.hasActiveListeners = false;
-    this.latestResponse = grpcOp;
+    this.latestResponse = operationType;
     this.longrunningDescriptor = longrunningDescriptor;
     this.result = null;
     this.metadata = null;
     this.backoffSettings = backoffSettings;
     this.diregapic = longrunningDescriptor.diregapic;
     this.computeRequest = computeRequest;
-    if ('done' in grpcOp) {
-      this.name = grpcOp.name;
-      this.done = grpcOp.done;
-      this.error = grpcOp.error as unknown as GoogleError;
-      this._unpackResponse(grpcOp);
+    if (!this.diregapic) {
+      this.name = operationType.name;
+      this.done = (operationType as LROOperation).done;
+      this.error = operationType.error as unknown as GoogleError;
+      this._unpackResponse(operationType as LROOperation);
     } else {
-      this.name = grpcOp.id;
-      this.done = this._isComputeOperationDone(grpcOp);
-      this.error = fromComputeOperationError(grpcOp);
-      this._unpackComputeResponse(grpcOp);
+      this.name = (operationType as ComputeLROOperation).id;
+      this.done = this._isComputeOperationDone(
+        operationType as ComputeLROOperation
+      );
+      this.error = fromComputeOperationError(
+        operationType as ComputeLROOperation
+      );
+      this._unpackComputeResponse(operationType as ComputeLROOperation);
     }
     this._listenForEvents();
     this._callOptions = callOptions;
@@ -196,17 +207,21 @@ export class Operation extends EventEmitter {
     function promisifyResponse() {
       if (!callback) {
         return new Promise((resolve, reject) => {
-          if ('done' in self.latestResponse) {
-            if (self.latestResponse.error) {
-              const error = new GoogleError(self.latestResponse.error.message!);
-              error.code = self.latestResponse.error.code!;
+          if (!self.diregapic) {
+            const err = (self.latestResponse as LROOperation).error;
+            if (err) {
+              const error = new GoogleError(err.message!);
+              error.code = err.code!;
               reject(error);
             } else {
               resolve([self.result, self.metadata, self.latestResponse]);
             }
           } else {
-            if (self.latestResponse.error) {
-              const computeErr = fromComputeOperationError(self.latestResponse);
+            const err = (self.latestResponse as ComputeLROOperation).error;
+            if (err) {
+              const computeErr = fromComputeOperationError(
+                self.latestResponse as ComputeLROOperation
+              );
               reject(computeErr);
             } else {
               resolve([self.latestResponse, null, self.latestResponse]);
@@ -217,18 +232,23 @@ export class Operation extends EventEmitter {
       return;
     }
 
-    if ('done' in this.latestResponse) {
-      if (this.latestResponse.done) {
-        this._unpackResponse(this.latestResponse, callback);
+    if (!this.diregapic) {
+      if ((this.latestResponse as LROOperation).done) {
+        this._unpackResponse(this.latestResponse as LROOperation, callback);
         return promisifyResponse() as Promise<{}>;
       }
     } else {
-      if (this._isComputeOperationDone(this.latestResponse)) {
-        this._unpackComputeResponse(this.latestResponse, callback);
+      if (
+        this._isComputeOperationDone(this.latestResponse as ComputeLROOperation)
+      ) {
+        this._unpackComputeResponse(
+          this.latestResponse as ComputeLROOperation,
+          callback
+        );
         return promisifyResponse() as Promise<{}>;
       }
     }
-    if ('done' in this.latestResponse) {
+    if (!this.diregapic) {
       const request =
         new operationProtos.google.longrunning.GetOperationRequest();
       request.name = this.latestResponse.name;
@@ -236,14 +256,13 @@ export class Operation extends EventEmitter {
         operationsClient as OperationsClient
       ).getOperationInternal(request, this._callOptions!);
     } else {
-      const request: ComputeOperationRequest = this._composeComputeRequest();
-      this.currentCallPromise_ = (
-        operationsClient as ComputeOperationClient
-      ).get(request);
+      const request = this._composeComputeRequest();
+      this.currentCallPromise_ =
+        operationsClient[this.diregapic.pollingMethodName!](request);
     }
 
     const noCallbackPromise = this.currentCallPromise_!.then(responses => {
-      if ('done' in responses[0]!) {
+      if (!this.diregapic) {
         self.latestResponse = responses[0] as LROOperation;
         self._unpackResponse(responses[0] as LROOperation, callback);
       } else {
@@ -318,33 +337,34 @@ export class Operation extends EventEmitter {
   }
 
   _isComputeOperationDone(op: ComputeLROOperation): boolean {
-    const opProtobuf =
-      computeOperationProtos.google.cloud.compute.v1.Operation.fromObject(op);
-    return (
-      opProtobuf.status ===
-      computeOperationProtos.google.cloud.compute.v1.Operation.Status.DONE
-    );
+    const opProtobuf = computeOperationProtos.Operation.fromObject(op);
+    return opProtobuf.status === computeOperationProtos.Operation.Status.DONE;
   }
 
   // Polling request require fields has been checked in the LRO method before
   // operation.promise() has been called. Transcoding will throw error if any required
   // fields missing.
-  _composeComputeRequest(): ComputeOperationRequest {
-    const request: {[k: string]: unknown} = {
-      project: this.computeRequest?.project,
-    };
-    if (this.computeRequest && 'parentId' in this.computeRequest) {
-      request.parentId = this.computeRequest.parentId;
-      return request;
+  _composeComputeRequest(): {} | undefined {
+    const request: {[k: string]: unknown} = {};
+    if (!this.diregapic?.pollingMethodRequestType) {
+      return undefined;
     }
-    request.operation = (this.latestResponse as ComputeLROOperation).name;
-    if (this.computeRequest && 'zone' in this.computeRequest) {
-      request.zone = this.computeRequest.zone;
-      return request;
-    }
-    if (this.computeRequest && 'region' in this.computeRequest) {
-      request.region = this.computeRequest.region;
-      return request;
+    const fields = this.diregapic?.pollingMethodRequestType!.fieldsArray;
+    for (const field of fields) {
+      if (this.computeRequest && field.name in this.computeRequest) {
+        request[field.name] = this.computeRequest[field.name];
+      }
+      const operationResponseFieldName =
+        '(google.cloud.operation_response_field)';
+      if (field.options && operationResponseFieldName in field.options) {
+        const responseField = field.options[
+          operationResponseFieldName
+        ] as string;
+        if (responseField in this.latestResponse) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          request[field.name] = (this.latestResponse as any)[responseField];
+        }
+      }
     }
     return request;
   }
@@ -371,9 +391,10 @@ export class Operation extends EventEmitter {
       deadline = now.getTime() + this.backoffSettings.totalTimeoutMillis;
     }
     let previousMetadataBytes: Uint8Array;
-    if ('done' in this.latestResponse) {
-      if (this.latestResponse.metadata) {
-        previousMetadataBytes = this.latestResponse.metadata.value!;
+    if (!this.diregapic) {
+      const metadata = (this.latestResponse as LROOperation).metadata;
+      if (metadata) {
+        previousMetadataBytes = metadata.value!;
       }
     }
 
