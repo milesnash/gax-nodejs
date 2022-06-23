@@ -1,3 +1,19 @@
+/**
+ * Copyright 2022 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /*eslint-disable block-scoped-var, id-length, no-control-regex, no-magic-numbers, no-prototype-builtins, no-redeclare, no-shadow, no-var, sort-vars*/
 (function(global, factory) { /* global define, require, module */
 
@@ -12,12 +28,12 @@
 
     // Common aliases
     var $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
-    
+
     // Exported root namespace
     var $root = $protobuf.roots.compute_operations_protos || ($protobuf.roots.compute_operations_protos = {});
-    
+
     $root.Operation = (function() {
-    
+
         /**
          * Properties of an Operation.
          * @exports IOperation
@@ -47,7 +63,7 @@
          * @property {Array.<IWarnings>|null} [warnings] Operation warnings
          * @property {string|null} [zone] Operation zone
          */
-    
+
         /**
          * Constructs a new Operation.
          * @exports Operation
@@ -63,7 +79,7 @@
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-    
+
         /**
          * Operation clientOperationId.
          * @member {string} clientOperationId
@@ -71,7 +87,7 @@
          * @instance
          */
         Operation.prototype.clientOperationId = "";
-    
+
         /**
          * Operation creationTimestamp.
          * @member {string} creationTimestamp
@@ -79,7 +95,7 @@
          * @instance
          */
         Operation.prototype.creationTimestamp = "";
-    
+
         /**
          * Operation description.
          * @member {string} description
@@ -87,7 +103,7 @@
          * @instance
          */
         Operation.prototype.description = "";
-    
+
         /**
          * Operation endTime.
          * @member {string} endTime
@@ -95,7 +111,7 @@
          * @instance
          */
         Operation.prototype.endTime = "";
-    
+
         /**
          * Operation error.
          * @member {IError|null|undefined} error
@@ -103,7 +119,7 @@
          * @instance
          */
         Operation.prototype.error = null;
-    
+
         /**
          * Operation httpErrorMessage.
          * @member {string} httpErrorMessage
@@ -111,7 +127,7 @@
          * @instance
          */
         Operation.prototype.httpErrorMessage = "";
-    
+
         /**
          * Operation httpErrorStatusCode.
          * @member {number} httpErrorStatusCode
@@ -119,7 +135,7 @@
          * @instance
          */
         Operation.prototype.httpErrorStatusCode = 0;
-    
+
         /**
          * Operation id.
          * @member {number|Long} id
@@ -127,7 +143,7 @@
          * @instance
          */
         Operation.prototype.id = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
-    
+
         /**
          * Operation insertTime.
          * @member {string} insertTime
@@ -135,7 +151,7 @@
          * @instance
          */
         Operation.prototype.insertTime = "";
-    
+
         /**
          * Operation kind.
          * @member {string} kind
@@ -143,7 +159,7 @@
          * @instance
          */
         Operation.prototype.kind = "";
-    
+
         /**
          * Operation name.
          * @member {string} name
@@ -151,7 +167,7 @@
          * @instance
          */
         Operation.prototype.name = "";
-    
+
         /**
          * Operation operationGroupId.
          * @member {string} operationGroupId
@@ -159,7 +175,7 @@
          * @instance
          */
         Operation.prototype.operationGroupId = "";
-    
+
         /**
          * Operation operationType.
          * @member {string} operationType
@@ -167,7 +183,7 @@
          * @instance
          */
         Operation.prototype.operationType = "";
-    
+
         /**
          * Operation progress.
          * @member {number} progress
@@ -175,7 +191,7 @@
          * @instance
          */
         Operation.prototype.progress = 0;
-    
+
         /**
          * Operation region.
          * @member {string} region
@@ -183,7 +199,7 @@
          * @instance
          */
         Operation.prototype.region = "";
-    
+
         /**
          * Operation selfLink.
          * @member {string} selfLink
@@ -191,7 +207,7 @@
          * @instance
          */
         Operation.prototype.selfLink = "";
-    
+
         /**
          * Operation startTime.
          * @member {string} startTime
@@ -199,7 +215,7 @@
          * @instance
          */
         Operation.prototype.startTime = "";
-    
+
         /**
          * Operation status.
          * @member {Operation.Status} status
@@ -207,7 +223,7 @@
          * @instance
          */
         Operation.prototype.status = 0;
-    
+
         /**
          * Operation statusMessage.
          * @member {string} statusMessage
@@ -215,7 +231,7 @@
          * @instance
          */
         Operation.prototype.statusMessage = "";
-    
+
         /**
          * Operation targetId.
          * @member {number|Long} targetId
@@ -223,7 +239,7 @@
          * @instance
          */
         Operation.prototype.targetId = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
-    
+
         /**
          * Operation targetLink.
          * @member {string} targetLink
@@ -231,7 +247,7 @@
          * @instance
          */
         Operation.prototype.targetLink = "";
-    
+
         /**
          * Operation user.
          * @member {string} user
@@ -239,7 +255,7 @@
          * @instance
          */
         Operation.prototype.user = "";
-    
+
         /**
          * Operation warnings.
          * @member {Array.<IWarnings>} warnings
@@ -247,7 +263,7 @@
          * @instance
          */
         Operation.prototype.warnings = $util.emptyArray;
-    
+
         /**
          * Operation zone.
          * @member {string} zone
@@ -255,7 +271,7 @@
          * @instance
          */
         Operation.prototype.zone = "";
-    
+
         /**
          * Creates a new Operation instance using the specified properties.
          * @function create
@@ -267,7 +283,7 @@
         Operation.create = function create(properties) {
             return new Operation(properties);
         };
-    
+
         /**
          * Encodes the specified Operation message. Does not implicitly {@link Operation.verify|verify} messages.
          * @function encode
@@ -331,7 +347,7 @@
                     $root.Warnings.encode(message.warnings[i], writer.uint32(/* id 498091095, wireType 2 =*/3984728762).fork()).ldelim();
             return writer;
         };
-    
+
         /**
          * Encodes the specified Operation message, length delimited. Does not implicitly {@link Operation.verify|verify} messages.
          * @function encodeDelimited
@@ -344,7 +360,7 @@
         Operation.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
-    
+
         /**
          * Decodes an Operation message from the specified reader or buffer.
          * @function decode
@@ -444,7 +460,7 @@
             }
             return message;
         };
-    
+
         /**
          * Decodes an Operation message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
@@ -460,7 +476,7 @@
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
-    
+
         /**
          * Verifies an Operation message.
          * @function verify
@@ -561,7 +577,7 @@
                     return "zone: string expected";
             return null;
         };
-    
+
         /**
          * Creates an Operation message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
@@ -665,7 +681,7 @@
                 message.zone = String(object.zone);
             return message;
         };
-    
+
         /**
          * Creates a plain object from an Operation message. Also converts values to other types if specified.
          * @function toObject
@@ -773,7 +789,7 @@
             }
             return object;
         };
-    
+
         /**
          * Converts this Operation to JSON.
          * @function toJSON
@@ -784,7 +800,7 @@
         Operation.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
-    
+
         /**
          * Status enum.
          * @name Operation.Status
@@ -802,12 +818,12 @@
             values[valuesById[121282975] = "RUNNING"] = 121282975;
             return values;
         })();
-    
+
         return Operation;
     })();
-    
+
     $root.Warnings = (function() {
-    
+
         /**
          * Properties of a Warnings.
          * @exports IWarnings
@@ -816,7 +832,7 @@
          * @property {Array.<IData>|null} [data] Warnings data
          * @property {string|null} [message] Warnings message
          */
-    
+
         /**
          * Constructs a new Warnings.
          * @exports Warnings
@@ -832,7 +848,7 @@
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-    
+
         /**
          * Warnings code.
          * @member {string} code
@@ -840,7 +856,7 @@
          * @instance
          */
         Warnings.prototype.code = "";
-    
+
         /**
          * Warnings data.
          * @member {Array.<IData>} data
@@ -848,7 +864,7 @@
          * @instance
          */
         Warnings.prototype.data = $util.emptyArray;
-    
+
         /**
          * Warnings message.
          * @member {string} message
@@ -856,7 +872,7 @@
          * @instance
          */
         Warnings.prototype.message = "";
-    
+
         /**
          * Creates a new Warnings instance using the specified properties.
          * @function create
@@ -868,7 +884,7 @@
         Warnings.create = function create(properties) {
             return new Warnings(properties);
         };
-    
+
         /**
          * Encodes the specified Warnings message. Does not implicitly {@link Warnings.verify|verify} messages.
          * @function encode
@@ -890,7 +906,7 @@
                 writer.uint32(/* id 418054151, wireType 2 =*/3344433210).string(message.message);
             return writer;
         };
-    
+
         /**
          * Encodes the specified Warnings message, length delimited. Does not implicitly {@link Warnings.verify|verify} messages.
          * @function encodeDelimited
@@ -903,7 +919,7 @@
         Warnings.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
-    
+
         /**
          * Decodes a Warnings message from the specified reader or buffer.
          * @function decode
@@ -940,7 +956,7 @@
             }
             return message;
         };
-    
+
         /**
          * Decodes a Warnings message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
@@ -956,7 +972,7 @@
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
-    
+
         /**
          * Verifies a Warnings message.
          * @function verify
@@ -985,7 +1001,7 @@
                     return "message: string expected";
             return null;
         };
-    
+
         /**
          * Creates a Warnings message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
@@ -1014,7 +1030,7 @@
                 message.message = String(object.message);
             return message;
         };
-    
+
         /**
          * Creates a plain object from a Warnings message. Also converts values to other types if specified.
          * @function toObject
@@ -1045,7 +1061,7 @@
                 object.message = message.message;
             return object;
         };
-    
+
         /**
          * Converts this Warnings to JSON.
          * @function toJSON
@@ -1056,7 +1072,7 @@
         Warnings.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
-    
+
         /**
          * Code enum.
          * @name Warnings.Code
@@ -1118,19 +1134,19 @@
             values[valuesById[13328052] = "UNREACHABLE"] = 13328052;
             return values;
         })();
-    
+
         return Warnings;
     })();
-    
+
     $root.Error = (function() {
-    
+
         /**
          * Properties of an Error.
          * @exports IError
          * @interface IError
          * @property {Array.<IErrors>|null} [errors] Error errors
          */
-    
+
         /**
          * Constructs a new Error.
          * @exports Error
@@ -1146,7 +1162,7 @@
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-    
+
         /**
          * Error errors.
          * @member {Array.<IErrors>} errors
@@ -1154,7 +1170,7 @@
          * @instance
          */
         Error.prototype.errors = $util.emptyArray;
-    
+
         /**
          * Creates a new Error instance using the specified properties.
          * @function create
@@ -1166,7 +1182,7 @@
         Error.create = function create(properties) {
             return new Error(properties);
         };
-    
+
         /**
          * Encodes the specified Error message. Does not implicitly {@link Error.verify|verify} messages.
          * @function encode
@@ -1184,7 +1200,7 @@
                     $root.Errors.encode(message.errors[i], writer.uint32(/* id 315977579, wireType 2 =*/2527820634).fork()).ldelim();
             return writer;
         };
-    
+
         /**
          * Encodes the specified Error message, length delimited. Does not implicitly {@link Error.verify|verify} messages.
          * @function encodeDelimited
@@ -1197,7 +1213,7 @@
         Error.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
-    
+
         /**
          * Decodes an Error message from the specified reader or buffer.
          * @function decode
@@ -1228,7 +1244,7 @@
             }
             return message;
         };
-    
+
         /**
          * Decodes an Error message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
@@ -1244,7 +1260,7 @@
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
-    
+
         /**
          * Verifies an Error message.
          * @function verify
@@ -1267,7 +1283,7 @@
             }
             return null;
         };
-    
+
         /**
          * Creates an Error message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
@@ -1292,7 +1308,7 @@
             }
             return message;
         };
-    
+
         /**
          * Creates a plain object from an Error message. Also converts values to other types if specified.
          * @function toObject
@@ -1315,7 +1331,7 @@
             }
             return object;
         };
-    
+
         /**
          * Converts this Error to JSON.
          * @function toJSON
@@ -1326,12 +1342,12 @@
         Error.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
-    
+
         return Error;
     })();
-    
+
     $root.Errors = (function() {
-    
+
         /**
          * Properties of an Errors.
          * @exports IErrors
@@ -1340,7 +1356,7 @@
          * @property {string|null} [location] Errors location
          * @property {string|null} [message] Errors message
          */
-    
+
         /**
          * Constructs a new Errors.
          * @exports Errors
@@ -1355,7 +1371,7 @@
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-    
+
         /**
          * Errors code.
          * @member {string} code
@@ -1363,7 +1379,7 @@
          * @instance
          */
         Errors.prototype.code = "";
-    
+
         /**
          * Errors location.
          * @member {string} location
@@ -1371,7 +1387,7 @@
          * @instance
          */
         Errors.prototype.location = "";
-    
+
         /**
          * Errors message.
          * @member {string} message
@@ -1379,7 +1395,7 @@
          * @instance
          */
         Errors.prototype.message = "";
-    
+
         /**
          * Creates a new Errors instance using the specified properties.
          * @function create
@@ -1391,7 +1407,7 @@
         Errors.create = function create(properties) {
             return new Errors(properties);
         };
-    
+
         /**
          * Encodes the specified Errors message. Does not implicitly {@link Errors.verify|verify} messages.
          * @function encode
@@ -1412,7 +1428,7 @@
                 writer.uint32(/* id 418054151, wireType 2 =*/3344433210).string(message.message);
             return writer;
         };
-    
+
         /**
          * Encodes the specified Errors message, length delimited. Does not implicitly {@link Errors.verify|verify} messages.
          * @function encodeDelimited
@@ -1425,7 +1441,7 @@
         Errors.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
-    
+
         /**
          * Decodes an Errors message from the specified reader or buffer.
          * @function decode
@@ -1460,7 +1476,7 @@
             }
             return message;
         };
-    
+
         /**
          * Decodes an Errors message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
@@ -1476,7 +1492,7 @@
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
-    
+
         /**
          * Verifies an Errors message.
          * @function verify
@@ -1499,7 +1515,7 @@
                     return "message: string expected";
             return null;
         };
-    
+
         /**
          * Creates an Errors message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
@@ -1520,7 +1536,7 @@
                 message.message = String(object.message);
             return message;
         };
-    
+
         /**
          * Creates a plain object from an Errors message. Also converts values to other types if specified.
          * @function toObject
@@ -1547,7 +1563,7 @@
                 object.message = message.message;
             return object;
         };
-    
+
         /**
          * Converts this Errors to JSON.
          * @function toJSON
@@ -1558,12 +1574,12 @@
         Errors.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
-    
+
         return Errors;
     })();
-    
+
     $root.Data = (function() {
-    
+
         /**
          * Properties of a Data.
          * @exports IData
@@ -1571,7 +1587,7 @@
          * @property {string|null} [key] Data key
          * @property {string|null} [value] Data value
          */
-    
+
         /**
          * Constructs a new Data.
          * @exports Data
@@ -1586,7 +1602,7 @@
                     if (properties[keys[i]] != null)
                         this[keys[i]] = properties[keys[i]];
         }
-    
+
         /**
          * Data key.
          * @member {string} key
@@ -1594,7 +1610,7 @@
          * @instance
          */
         Data.prototype.key = "";
-    
+
         /**
          * Data value.
          * @member {string} value
@@ -1602,7 +1618,7 @@
          * @instance
          */
         Data.prototype.value = "";
-    
+
         /**
          * Creates a new Data instance using the specified properties.
          * @function create
@@ -1614,7 +1630,7 @@
         Data.create = function create(properties) {
             return new Data(properties);
         };
-    
+
         /**
          * Encodes the specified Data message. Does not implicitly {@link Data.verify|verify} messages.
          * @function encode
@@ -1633,7 +1649,7 @@
                 writer.uint32(/* id 111972721, wireType 2 =*/895781770).string(message.value);
             return writer;
         };
-    
+
         /**
          * Encodes the specified Data message, length delimited. Does not implicitly {@link Data.verify|verify} messages.
          * @function encodeDelimited
@@ -1646,7 +1662,7 @@
         Data.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
-    
+
         /**
          * Decodes a Data message from the specified reader or buffer.
          * @function decode
@@ -1678,7 +1694,7 @@
             }
             return message;
         };
-    
+
         /**
          * Decodes a Data message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
@@ -1694,7 +1710,7 @@
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
-    
+
         /**
          * Verifies a Data message.
          * @function verify
@@ -1714,7 +1730,7 @@
                     return "value: string expected";
             return null;
         };
-    
+
         /**
          * Creates a Data message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
@@ -1733,7 +1749,7 @@
                 message.value = String(object.value);
             return message;
         };
-    
+
         /**
          * Creates a plain object from a Data message. Also converts values to other types if specified.
          * @function toObject
@@ -1757,7 +1773,7 @@
                 object.value = message.value;
             return object;
         };
-    
+
         /**
          * Converts this Data to JSON.
          * @function toJSON
@@ -1768,7 +1784,7 @@
         Data.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
-    
+
         return Data;
     })();
 
