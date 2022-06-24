@@ -224,7 +224,11 @@ export class Operation extends EventEmitter {
               );
               reject(computeErr);
             } else {
-              resolve([self.latestResponse, null, self.latestResponse]);
+              resolve([
+                self.latestResponse,
+                self.latestResponse,
+                self.latestResponse,
+              ]);
             }
           }
         });
@@ -332,7 +336,7 @@ export class Operation extends EventEmitter {
       }
     }
     if (callback) {
-      callback(null, this.response!, null, op);
+      callback(null, this.response!, this.response, op);
     }
   }
 
