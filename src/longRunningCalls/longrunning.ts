@@ -23,7 +23,7 @@ import {BackoffSettings, CallOptions} from '../gax';
 import {GoogleError} from '../googleError';
 import {Metadata} from '../grpc';
 import {
-  ComputeLROOptions,
+  DiregapicLROOptions,
   LongRunningDescriptor,
 } from './longRunningDescriptor';
 import * as operationProtos from '../../protos/operations';
@@ -46,7 +46,10 @@ export interface GetOperationCallback {
   ): void;
 }
 
-function fromComputeOperationError(
+// (TODO): Make error generic for diregapic, not only for compute.Should use annotation
+// 'google.cloud.operation_field' to get the error code and error message.
+// See https://github.com/googleapis/googleapis/blob/master/google/cloud/compute/v1small/compute_small.proto#L455
+function fromDiregapicOperationError(
   operation: ComputeLROOperation
 ): GoogleError | undefined {
   if (!operation.error) {
@@ -83,8 +86,8 @@ export class Operation extends EventEmitter {
   done?: boolean;
   error?: GoogleError;
   response?: {};
-  diregapic?: ComputeLROOptions | null;
-  computeRequest?: {[k: string]: unknown};
+  diregapic?: DiregapicLROOptions | null;
+  diregapicLRORequest?: {[k: string]: unknown};
 
   /**
    * Wrapper for a google.longrunnung.Operation.
@@ -104,7 +107,7 @@ export class Operation extends EventEmitter {
     longrunningDescriptor: LongRunningDescriptor,
     backoffSettings: BackoffSettings,
     callOptions?: CallOptions,
-    computeRequest?: {}
+    diregapicLRORequest?: {}
   ) {
     super();
     this.completeListeners = 0;
@@ -115,7 +118,7 @@ export class Operation extends EventEmitter {
     this.metadata = null;
     this.backoffSettings = backoffSettings;
     this.diregapic = longrunningDescriptor.diregapic;
-    this.computeRequest = computeRequest;
+    this.diregapicLRORequest = diregapicLRORequest;
     if (!this.diregapic) {
       this.name = operationType.name;
       this.done = (operationType as LROOperation).done;
@@ -123,13 +126,13 @@ export class Operation extends EventEmitter {
       this._unpackResponse(operationType as LROOperation);
     } else {
       this.name = (operationType as ComputeLROOperation).id;
-      this.done = this._isComputeOperationDone(
+      this.done = this._isDiregapicOperationDone(
         operationType as ComputeLROOperation
       );
-      this.error = fromComputeOperationError(
+      this.error = fromDiregapicOperationError(
         operationType as ComputeLROOperation
       );
-      this._unpackComputeResponse(operationType as ComputeLROOperation);
+      this._unpackDiregapicResponse(operationType as ComputeLROOperation);
     }
     this._listenForEvents();
     this._callOptions = callOptions;
@@ -219,7 +222,7 @@ export class Operation extends EventEmitter {
           } else {
             const err = (self.latestResponse as ComputeLROOperation).error;
             if (err) {
-              const computeErr = fromComputeOperationError(
+              const computeErr = fromDiregapicOperationError(
                 self.latestResponse as ComputeLROOperation
               );
               reject(computeErr);
@@ -243,9 +246,11 @@ export class Operation extends EventEmitter {
       }
     } else {
       if (
-        this._isComputeOperationDone(this.latestResponse as ComputeLROOperation)
+        this._isDiregapicOperationDone(
+          this.latestResponse as ComputeLROOperation
+        )
       ) {
-        this._unpackComputeResponse(
+        this._unpackDiregapicResponse(
           this.latestResponse as ComputeLROOperation,
           callback
         );
@@ -260,7 +265,7 @@ export class Operation extends EventEmitter {
         operationsClient as OperationsClient
       ).getOperationInternal(request, this._callOptions!);
     } else {
-      const request = this._composeComputeRequest();
+      const request = this._diregapicPollingRequest();
       this.currentCallPromise_ =
         operationsClient[this.diregapic.pollingMethodName!](request);
     }
@@ -271,7 +276,7 @@ export class Operation extends EventEmitter {
         self._unpackResponse(responses[0] as LROOperation, callback);
       } else {
         self.latestResponse = responses[0] as ComputeLROOperation;
-        self._unpackComputeResponse(
+        self._unpackDiregapicResponse(
           responses[0] as ComputeLROOperation,
           callback
         );
@@ -318,13 +323,13 @@ export class Operation extends EventEmitter {
     }
   }
 
-  _unpackComputeResponse(
+  _unpackDiregapicResponse(
     op: ComputeLROOperation,
     callback?: GetOperationCallback
   ) {
-    if (this._isComputeOperationDone(op)) {
+    if (this._isDiregapicOperationDone(op)) {
       if (op.error) {
-        const err = fromComputeOperationError(op);
+        const err = fromDiregapicOperationError(op);
         if (callback) {
           return callback(err);
         }
@@ -340,7 +345,7 @@ export class Operation extends EventEmitter {
     }
   }
 
-  _isComputeOperationDone(op: ComputeLROOperation): boolean {
+  _isDiregapicOperationDone(op: ComputeLROOperation): boolean {
     const opProtobuf = computeOperationProtos.Operation.fromObject(op);
     return opProtobuf.status === computeOperationProtos.Operation.Status.DONE;
   }
@@ -348,15 +353,19 @@ export class Operation extends EventEmitter {
   // Polling request require fields has been checked in the LRO method before
   // operation.promise() has been called. Transcoding will throw error if any required
   // fields missing.
-  _composeComputeRequest(): {} | undefined {
+  //(TODO): Should use `google.cloud.operation_request_field` annotation to get operation
+  // request field. Possible solution: read the rpc request's options in generator, and pass down
+  // to gax through LongRunningDescriptor.diregapic.
+  // See https://github.com/googleapis/googleapis/blob/master/google/cloud/compute/v1small/compute_small.proto#L361
+  _diregapicPollingRequest(): {} | undefined {
     const request: {[k: string]: unknown} = {};
     if (!this.diregapic?.pollingMethodRequestType) {
       return undefined;
     }
     const fields = this.diregapic?.pollingMethodRequestType!.fieldsArray;
     for (const field of fields) {
-      if (this.computeRequest && field.name in this.computeRequest) {
-        request[field.name] = this.computeRequest[field.name];
+      if (this.diregapicLRORequest && field.name in this.diregapicLRORequest) {
+        request[field.name] = this.diregapicLRORequest[field.name];
       }
       const operationResponseFieldName =
         '(google.cloud.operation_response_field)';
@@ -465,7 +474,7 @@ export class Operation extends EventEmitter {
             }
           } else {
             if (
-              self._isComputeOperationDone(rawResponse as ComputeLROOperation)
+              self._isDiregapicOperationDone(rawResponse as ComputeLROOperation)
             ) {
               setImmediate(emit, 'complete', {}, metadata, rawResponse);
               return;

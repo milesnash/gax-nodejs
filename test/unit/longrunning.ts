@@ -970,7 +970,7 @@ describe('diregapic longrunning', () => {
                   done(err);
                 }
                 assert.strictEqual(result, SUCCESSFUL_COMPUTE_OP);
-                assert.strictEqual(metadata, null);
+                assert.strictEqual(metadata, SUCCESSFUL_COMPUTE_OP);
                 assert.deepStrictEqual(rawResponse, SUCCESSFUL_COMPUTE_OP);
                 assert.strictEqual(client.get.callCount, 0);
                 done();
@@ -998,7 +998,7 @@ describe('diregapic longrunning', () => {
                   done(err);
                 }
                 assert.strictEqual(result, SUCCESSFUL_COMPUTE_OP);
-                assert.strictEqual(metadata, null);
+                assert.strictEqual(metadata, SUCCESSFUL_COMPUTE_OP);
                 assert.deepStrictEqual(rawResponse, SUCCESSFUL_COMPUTE_OP);
                 assert.strictEqual(client.get.callCount, 1);
                 done();
@@ -1029,7 +1029,7 @@ describe('diregapic longrunning', () => {
                     done(err);
                   }
                   assert.strictEqual(result, SUCCESSFUL_COMPUTE_OP);
-                  assert.strictEqual(metadata, null);
+                  assert.strictEqual(metadata, SUCCESSFUL_COMPUTE_OP);
                   assert.deepStrictEqual(rawResponse, SUCCESSFUL_COMPUTE_OP);
                   assert.strictEqual(client.get.callCount, 1);
                   done();
@@ -1063,7 +1063,7 @@ describe('diregapic longrunning', () => {
               const metadata = responses[1];
               const rawResponse = responses[2];
               assert.strictEqual(result, SUCCESSFUL_COMPUTE_OP);
-              assert.strictEqual(metadata, null);
+              assert.strictEqual(metadata, SUCCESSFUL_COMPUTE_OP);
               assert.deepStrictEqual(rawResponse, SUCCESSFUL_COMPUTE_OP);
               assert.strictEqual(client.get.callCount, 1);
               done();
@@ -1125,7 +1125,7 @@ describe('diregapic longrunning', () => {
                   done(err);
                 }
                 assert.strictEqual(result, SUCCESSFUL_COMPUTE_OP);
-                assert.strictEqual(metadata, null);
+                assert.strictEqual(metadata, SUCCESSFUL_COMPUTE_OP);
                 assert.deepStrictEqual(rawResponse, SUCCESSFUL_COMPUTE_OP);
                 assert.strictEqual(client.get.callCount, 0);
                 done();

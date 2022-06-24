@@ -26,7 +26,7 @@ export interface AnyDecoder {
   (reader: protobuf.Reader | Uint8Array, length?: number): protobuf.Message<{}>;
 }
 
-export interface ComputeLROOptions {
+export interface DiregapicLROOptions {
   pollingService?: string;
   pollingMethodName: string;
   pollingMethodRequestType: protobuf.Type;
@@ -40,14 +40,14 @@ export class LongRunningDescriptor implements Descriptor {
   operationsClient: OperationsClient | any;
   responseDecoder: AnyDecoder | null;
   metadataDecoder: AnyDecoder | null;
-  diregapic?: ComputeLROOptions | null;
+  diregapic?: DiregapicLROOptions | null;
 
   constructor(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     operationsClient: OperationsClient | any,
     responseDecoder: AnyDecoder | null,
     metadataDecoder: AnyDecoder | null,
-    diregapic?: ComputeLROOptions | null
+    diregapic?: DiregapicLROOptions | null
   ) {
     this.operationsClient = operationsClient;
     this.responseDecoder = responseDecoder;
